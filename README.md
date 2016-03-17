@@ -12,7 +12,7 @@ Things in my mind now for the featuers:
 Roughly I think of the architecture like this:
 
 ![Initial Architecture]
-(https://github.com/laithshadeed/rspiderx/arch.svg)
+(https://cdn.rawgit.com/laithshadeed/rspiderx/master/arch.svg)
 
 
 ## Installation
