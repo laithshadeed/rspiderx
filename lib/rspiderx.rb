@@ -1,5 +1,60 @@
-require "rspiderx/version"
+require 'rspiderx/version'
+require 'rspiderx/loader'
 
+# Main application, it will glue different modules, load them and start
+# the app execution
 module Rspiderx
-  # Your code goes here...
+  class << self
+    def run(args)
+      warn 'Rspiderx.run already called' && return if @is_called
+
+      modules = args[:modules]
+      @objects = {}
+
+      # Create mediator
+      @objects[:mediator] = Loader.get(:mediator, modules.delete(:mediator))
+
+      # Create consumers
+      consumers = modules.delete(:consumers)
+      consumers.each do |consumer|
+        @objects[:consumer].push( \
+          Loader.get(:consumer, consumer, @objects[:mediator]))
+      end
+
+      # Create other modules
+      modules.each do |type, mod|
+        @objects[type] = Loader.get(type, mod, @objects[:mediator])
+      end
+
+      @is_called = 1
+    end
+
+    def mediator
+      @objects[:mediator]
+    end
+
+    def fetcher
+      @objects[:fetcher]
+    end
+
+    def parser
+      @objects[:parser]
+    end
+
+    def crawler
+      @objects[:crawler]
+    end
+
+    def queue
+      @objects[:queue]
+    end
+
+    def consumers
+      @objects[:consumers]
+    end
+
+    def feeder
+      @objects[:feeder]
+    end
+  end
 end

@@ -1,3 +1,17 @@
 #!/usr/bin/env ruby
 
-require "rspiderx"
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'rspiderx'
+
+Rspiderx.run(
+  modules: {
+    mediator: 'simple',
+    fetcher: 'simple',
+    parser: 'regex',
+    crawler: 'simple',
+    queue: 'memory',
+    consumers: ['printer'],
+    feeder:    'simple'
+  },
+  input:      'https://twitter.com/laithshadeed'
+)
