@@ -12,18 +12,11 @@ module Rspiderx
       @objects = {}
 
       # Create mediator
-      @objects[:mediator] = Loader.get(:mediator, modules.delete(:mediator))
-
-      # Create consumers
-      consumers = modules.delete(:consumers)
-      consumers.each do |consumer|
-        @objects[:consumer].push( \
-          Loader.get(:consumer, consumer, @objects[:mediator]))
-      end
+      @objects[:mediator] = Loader.get_mediator(modules.delete(:mediator))
 
       # Create other modules
-      modules.each do |type, mod|
-        @objects[type] = Loader.get(type, mod, @objects[:mediator])
+      modules.each do |type, plugin|
+        @objects[type] = Loader.get(type, @objects[:mediator], plugin)
       end
 
       @is_called = 1

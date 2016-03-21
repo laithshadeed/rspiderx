@@ -4,20 +4,15 @@ module Rspiderx
   # rspiderx/module.rb
   # rspiderx/module_plugin.rb
   class Loader
-    def self.get(type, mod, mediator = nil)
-      name = mod.respond_to?('is_a') && mod.is_a(Hash) ? mod['name'] : mod
-      args = mod.respond_to?('is_a') && mod.is_a(Hash) ? mod['args'] : {}
-
+    def self.get(type, mediator, plugin)
       require "rspiderx/#{type}"
-      require "rspiderx/#{type}_#{name}"
+      klass = Object.const_get("Rspiderx::#{type.capitalize}")
+      return klass.new(mediator, plugin)
+    end
 
-      mod_class_name = "#{type.capitalize}#{name.capitalize}"
-      mod_instance = Object.const_get(mod_class_name).new(args)
-
-      options = [mod_instance]
-      options.push(mediator) if mediator
-
-      return Object.const_get(type.capitalize).new(*options)
+    def self.get_mediator(options)
+      require 'rspiderx/mediator'
+      return Rspiderx::Mediator.new(options)
     end
   end
 end
